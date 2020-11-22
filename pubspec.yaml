@@ -1,8 +1,8 @@
 name: async_executor
-description: A new Flutter package project.
+description: Async Executor is a tool what allow you execute any asynchronous functions handling the loading process and error catch, with normal popups.
 version: 0.0.1
-author:
-homepage:
+author: SamuelRioTz(samuelriotz@hotmail.com)
+homepage: https://github.com/SamuelRioTz/async_executor
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
