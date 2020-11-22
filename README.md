@@ -1,4 +1,4 @@
-# async_executor
+# Async Executor
 
 Async Executor is a tool what allow you execute any asynchronous functions handling the loading process and error catch, with normal popups.
 
