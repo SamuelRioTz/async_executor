@@ -37,8 +37,8 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   final AsyncExecutor normal = AsyncExecutor();
   final AsyncExecutor custom = AsyncExecutor(
-    loadingMessage: ({required BuildContext context}) async {
-      return await showDialog(
+    loadingMessage: (BuildContext context) async {
+      await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) {
@@ -65,10 +65,10 @@ class MyHomePage extends StatelessWidget {
         },
       );
     },
-    errorMessage: ({
+    errorMessage: (
+      BuildContext context,
       dynamic error,
-      required BuildContext context,
-    }) async {
+    ) async {
       return await showDialog(
         context: context,
         builder: (dialogContext) {
