@@ -3,16 +3,14 @@ library async_executor;
 import 'package:flutter/material.dart';
 
 class AsyncExecutor {
-  LoadingMessage _loadingMessage;
-  ErrorMessage _errorMessage;
+  late LoadingMessage _loadingMessage;
+  late ErrorMessage _errorMessage;
 
-  AsyncExecutor({LoadingMessage loadingMessage, ErrorMessage errorMessage}) {
+  AsyncExecutor({LoadingMessage? loadingMessage, ErrorMessage? errorMessage}) {
     _loadingMessage = (loadingMessage != null)
         ? loadingMessage
-        : ({
-            BuildContext context,
-          }) async {
-            return await showDialog(
+        : (context) async {
+            await showDialog(
               context: context,
               barrierDismissible: false,
               builder: (context) {
@@ -42,18 +40,18 @@ class AsyncExecutor {
 
     _errorMessage = (errorMessage != null)
         ? errorMessage
-        : ({
-            dynamic error,
+        : (
             BuildContext context,
-          }) async {
-            return await showDialog(
+            dynamic error,
+          ) async {
+            await showDialog(
               context: context,
               builder: (dialogContext) {
                 return AlertDialog(
                   title: Text("Error"),
                   content: Text("$error"),
                   actions: [
-                    FlatButton(
+                    TextButton(
                       child: Text("OK"),
                       onPressed: () {
                         Navigator.pop(dialogContext);
@@ -67,26 +65,27 @@ class AsyncExecutor {
   }
 
   void run<T>({
-    @required BuildContext context,
-    @required OnExecute<T> onExecute,
-    @required OnFinish<T> onFinish,
+    required BuildContext context,
+    required OnExecute<T> onExecute,
+    required OnFinish<T>? onFinish,
   }) {
-    _loadingMessage(
-      context: context,
-    );
+    _loadingMessage(context);
 
     onExecute().then((T value) {
       Navigator.pop(context);
       if (onFinish != null) onFinish(value);
     }).catchError((error) {
       Navigator.pop(context);
-      _errorMessage(error: error, context: context);
+      _errorMessage(context, error);
     });
   }
 }
 
-typedef Future ErrorMessage({dynamic error, BuildContext context});
-typedef Future LoadingMessage({BuildContext context});
+typedef ErrorMessage = Future<void> Function(
+  BuildContext context,
+  dynamic error,
+);
+typedef LoadingMessage = Future<void> Function(BuildContext context);
 
 typedef Future<T> OnExecute<T>();
 typedef void OnFinish<T>(T value);
