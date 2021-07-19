@@ -3,14 +3,14 @@ library async_executor;
 import 'package:flutter/material.dart';
 
 class AsyncExecutor {
-  LoadingMessage _loadingMessage;
-  ErrorMessage _errorMessage;
+  late LoadingMessage _loadingMessage;
+  late ErrorMessage _errorMessage;
 
-  AsyncExecutor({LoadingMessage loadingMessage, ErrorMessage errorMessage}) {
+  AsyncExecutor({LoadingMessage? loadingMessage, ErrorMessage? errorMessage}) {
     _loadingMessage = (loadingMessage != null)
         ? loadingMessage
         : ({
-            BuildContext context,
+            required BuildContext context,
           }) async {
             return await showDialog(
               context: context,
@@ -38,13 +38,13 @@ class AsyncExecutor {
                 );
               },
             );
-          };
+          } as Future<dynamic> Function({BuildContext? context});
 
     _errorMessage = (errorMessage != null)
         ? errorMessage
         : ({
             dynamic error,
-            BuildContext context,
+            required BuildContext context,
           }) async {
             return await showDialog(
               context: context,
@@ -53,7 +53,7 @@ class AsyncExecutor {
                   title: Text("Error"),
                   content: Text("$error"),
                   actions: [
-                    FlatButton(
+                    TextButton(
                       child: Text("OK"),
                       onPressed: () {
                         Navigator.pop(dialogContext);
@@ -63,13 +63,13 @@ class AsyncExecutor {
                 );
               },
             );
-          };
+          } as Future<dynamic> Function({BuildContext? context, dynamic error});
   }
 
   void run<T>({
-    @required BuildContext context,
-    @required OnExecute<T> onExecute,
-    @required OnFinish<T> onFinish,
+    required BuildContext context,
+    required OnExecute<T> onExecute,
+    required OnFinish<T>? onFinish,
   }) {
     _loadingMessage(
       context: context,
@@ -85,8 +85,11 @@ class AsyncExecutor {
   }
 }
 
-typedef Future ErrorMessage({dynamic error, BuildContext context});
-typedef Future LoadingMessage({BuildContext context});
+typedef ErrorMessage = Future<void> Function({
+  required dynamic error,
+  required BuildContext context,
+});
+typedef LoadingMessage = Future<void> Function({required BuildContext context});
 
 typedef Future<T> OnExecute<T>();
 typedef void OnFinish<T>(T value);
